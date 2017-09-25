@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Moderator;
 use Illuminate\Validation\Factory as ValidationFactory;
 use Validator;
+use Image;
 
 class ManageSubPlebbitsController extends Controller
 {
@@ -133,6 +134,7 @@ class ManageSubPlebbitsController extends Controller
             'social_description' => 'max:200',
             'moderator' => 'moderator|moderator_valid',
             'header' => 'mimes:jpeg,jpg,png,PNG,JPG,JPEG | max:3000',
+            'icon' => 'mimes:jpeg,jpg,png,PNG,JPG,JPEG | max:3000',
             'header_color' => 'max:6|regex:/(^[A-Za-z0-9\.\,\+\-\?\! ]+$)+/',
             'color' => 'max:6|regex:/(^[A-Za-z0-9\.\,\+\-\?\! ]+$)+/'
         ]);
@@ -152,12 +154,28 @@ class ManageSubPlebbitsController extends Controller
             $header->move('images/plebbits/headers/', $newName);
             $plebbit->header = $newName;
         }
+        $icon = $request->file('icon');
+        if ($icon) {
+            if ($plebbit->icon) {
+                unlink('images/plebbits/icons/' . $plebbit->icon);
+            }
+            $randomHash =  substr($icon->getClientOriginalName(), 0, 10) . str_random(40);
+            $newName = 'images/plebbits/icons/' . $randomHash . '.jpg';
+            Image::make($icon->getRealPath())->fit(107, 59)->save($newName);
+            $plebbit->icon = $randomHash . '.jpg';
+        }
 
         if ($request->input('delete_header') == 'on') {
             if ($plebbit->header) {
                 unlink('images/plebbits/headers/' . $plebbit->header);
             }
             $plebbit->header = null;
+        }
+        if ($request->input('delete_icon') == 'on') {
+            if ($plebbit->icon) {
+                unlink('images/plebbits/icons/' . $plebbit->icon);
+            }
+            $plebbit->icon = null;
         }
         if ($request->input('header_type') == 'on') {
             $plebbit->header_type = 'fit';

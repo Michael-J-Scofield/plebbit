@@ -81,7 +81,7 @@
 
                         @if($plebbit->header)
                             <div class="form-group">
-                                <label for="header" class="col-md-2 control-label">Current Image</label>
+                                <label for="header" class="col-md-2 control-label">Current Header</label>
                                 <div class="col-md-10">
                                     <img style="max-height: 100px;" src="/images/plebbits/headers/{{$plebbit->header}}" alt="{{$plebbit->title}}">
                                     <label style="position: absolute; bottom:25px; margin-left: 10px;" class="checkbox-inline">
@@ -93,6 +93,32 @@
                                 </div>
                             </div>
                         @endif
+
+                        <div class="form-group{{ $errors->has('icon') ? ' has-error' : '' }}">
+                            <label for="icon" class="col-md-2 control-label">Icon</label>
+                            <div class="col-md-9">
+                                <input placeholder="Header picture" id="icon" type="file" class="form-control" name="icon" value="{{ old('icon') }}">
+
+                                @if ($errors->has('icon'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('icon') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        @if($plebbit->icon)
+                            <div class="form-group">
+                                <label for="icon" class="col-md-2 control-label">Current Icon</label>
+                                <div class="col-md-10">
+                                    <img style="max-height: 100px;" src="/images/plebbits/icons/{{$plebbit->icon}}" alt="{{$plebbit->title}}">
+                                    <label style="position: absolute; bottom:0; margin-left: 10px;" class="checkbox-inline">
+                                        <input type="checkbox" name="delete_icon"> Delete icon
+                                    </label>
+                                </div>
+                            </div>
+                        @endif
+
 
                         <div class="form-group {{ $errors->has('moderator') ? ' has-error' : '' }}">
                             <label for="moderator" class="col-md-2 control-label">Moderators</label>

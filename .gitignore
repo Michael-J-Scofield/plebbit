@@ -13,4 +13,5 @@ yarn-error.log
 .DS_Store
 /public/media/*
 /public/images/plebbits/headers/*
+/public/images/plebbits/icons/*
 /public/images/plebbits/thumbnails/*

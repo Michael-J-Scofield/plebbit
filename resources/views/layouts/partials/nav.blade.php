@@ -30,8 +30,8 @@
                                 @php $first = false; @endphp
                                 @if($alert['type'] == 'mention')
                                     <a style="white-space: normal; text-align: left" href="/alerts/{{$alert['code']}}">
-                                            <span><strong>{{$alert['user_display_name']}}</strong> replied <strong>{{substr($alert['comment'], 0, 43)}}</strong> on {{substr($alert['thread_title'], 0, 20)}}</span>
-                                        </a>
+                                        <span><strong>{{$alert['user_display_name']}}</strong> replied <strong>{{substr($alert['comment'], 0, 43)}}</strong> on {{substr($alert['thread_title'], 0, 20)}}</span>
+                                    </a>
                                 @else
                                     <a href="{{ route('message.view', $alert['code']) }}">
                                         <span>New private message from <strong>{{$alert['user_display_name']}}</strong></span>
@@ -54,7 +54,11 @@
             <a class="navbar-brand" href="{{ url('/') }}">
                 <div style="height: inherit; display: inline-block; font-family: Raleway; font-weight: 500;">
                     {{ config('app.name', 'Plebbit') }}
-                    <img style="height: inherit; margin-top: -15px;" src="/images/logo.png" alt="plebbit">
+                    @if(isset($subPlebbit) && $subPlebbit->icon)
+                        <img style="height: 48px; margin-top: -9px;" src="/images/plebbits/icons/{{$subPlebbit->icon}}" alt="plebbit">
+                    @else
+                        <img style="height: inherit; margin-top: -12px;" src="/images/logo.png" alt="plebbit">
+                    @endif
                 </div>
             </a>
         </div>
