@@ -12,8 +12,9 @@
     <link rel="stylesheet" href="{{ asset('css/ladda-themeless.min.css') }}">
     <style>
         .header {
-            background-image: url("/images/plebbits/headers/{{$subPlebbit->header}}");
-            background-position: center;
+            @if($subPlebbit->header)
+            background: linear-gradient(rgba(0,0,0,0.2),rgba(0,0,0,0.2)),url("/images/plebbits/headers/{{$subPlebbit->header}}");
+            @endif            background-position: center;
             @if($subPlebbit->header_type == 'fit')
             background-size: cover;
             @endif

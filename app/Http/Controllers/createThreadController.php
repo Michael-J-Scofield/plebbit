@@ -45,6 +45,21 @@ class createThreadController extends Controller
             },
             'This subplebbit does not exist'
         );
+        $validationFactory->extend(
+            'safe_url',
+            function ($attribute, $value, $parameters) {
+                $link = $value;
+                if ( (!preg_match("~^(?:f|ht)tps?://~i", $link)) && (!empty($link)) ) {
+                    $link = "http://" . $link;
+                }
+                $parse = parse_url($link);
+                if ($parse['scheme'] != 'http' && $parse['scheme'] != 'https') {
+                    return false;
+                }
+                return true;
+            },
+            'Url not allowed'
+        );
     }
 
 
@@ -73,13 +88,15 @@ class createThreadController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'title' => "required|min:5:max:150|regex:/(^[A-Za-z0-9\.\,\+\(\)\-\?\! ]+$)+/",
+            'title' => "required|min:5:max:150",
             'subplebbit' => 'subplebbit',
+            'url' => 'safe_url',
             'post' => 'max:100000'
         ]);
 
         if ($request->input('type') == 'link') {
             $link = $request->input('url');
+
             if ( (!preg_match("~^(?:f|ht)tps?://~i", $link)) && (!empty($link)) ) {
                 $link = "http://" . $link;
             }
@@ -111,8 +128,6 @@ class createThreadController extends Controller
         if ($request->input('type') == 'link') {
             $thread->type = 'link';
             $thread->link = $link;
-
-
             // Make a thumbnail
             if (env('USE_CURL_PROXY') == 'yes') {
                 try {
@@ -194,8 +209,9 @@ class createThreadController extends Controller
             $thread->post = $request->input('text');
         }
         $thread->save();
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $thread->title)));
 
-        return Redirect('/p/' . $subPlebbit->name . '/comments/' . $thread->code . '/' . $thread->title);
+        return Redirect('/p/' . $subPlebbit->name . '/comments/' . $thread->code . '/' . str_slug($slug));
     }
 
 }

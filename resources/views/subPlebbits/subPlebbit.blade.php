@@ -147,13 +147,13 @@
                             </div>
                             <div style="min-width: 90px;" class="image col-xs-1">
                                 <div class="row">
-                                    <a href="@if($thread->link) {{$thread->link}} @else {{url('/')}}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{$thread->title}} @endif"><img style="max-height: 76px; max-width: 76px;" src="@if($thread->thumbnail !== null){{$thread->thumbnail}} @elseif($thread->link) {{url('/')}}/images/link_thumb.png @else {{url('/')}}/images/text_thumb.png @endif" alt="{{$thread->title}}"></a>
+                                    <a href="@if($thread->link) {{$thread->link}} @else {{url('/')}}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{str_slug($thread->title)}} @endif"><img style="max-height: 76px; max-width: 76px;" src="@if($thread->thumbnail !== null){{$thread->thumbnail}} @elseif($thread->link) {{url('/')}}/images/link_thumb.png @else {{url('/')}}/images/text_thumb.png @endif" alt="{{$thread->title}}"></a>
                                 </div>
                             </div>
                             <div class="thread_info">
-                                <a style="color: #636b6f;" href="@if($thread->link) {{$thread->link}} @else {{url('/')}}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{$thread->title}} @endif"><h3 class="thread_title overflow">{{$thread->title}}</h3></a>
+                                <a style="color: #636b6f;" href="@if($thread->link) {{$thread->link}} @else {{url('/')}}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{str_slug($thread->title)}} @endif"><h3 class="thread_title overflow">{{$thread->title}}</h3></a>
                                 <p class="overflow" style="margin-top: -10px;">placed by <a href="/u/{{$postername->username}}">{{$postername->username}}</a> {{Carbon\Carbon::parse($thread->created_at)->diffForHumans()}}</p>
-                                <a href="{{url('/')}}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{$thread->title}}"><p class="overflow" style="margin-top: -10px;"><strong>{{$thread->reply_count}} {{str_plural('reply', $thread->reply_count)}}</strong></p></a>
+                                <a href="{{url('/')}}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{str_slug($thread->title)}}"><p class="overflow" style="margin-top: -10px;"><strong>{{$thread->reply_count}} {{str_plural('reply', $thread->reply_count)}}</strong></p></a>
                             </div>
                         </div>
                     @endforeach

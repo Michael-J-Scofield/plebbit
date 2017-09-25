@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
     <link rel='icon' href="{{url('/')}}/images/logo.png" sizes="256x256" type="image/png" />
     <meta name="keywords" content=" plebbit, plebbit.net, vote, comment, submit " />
-    <meta name="description" content="Plebbit • Post your stolen memes here" />
 
     @yield('meta')
 

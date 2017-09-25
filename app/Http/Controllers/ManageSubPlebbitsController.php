@@ -66,7 +66,7 @@ class ManageSubPlebbitsController extends Controller
 
         $this->validate($request, [
             'name' => 'required|unique:sub_plebbits|max:60|regex:/(^[A-Za-z0-9\.\,\+\-\?\! ]+$)+/|min:3|alpha_dash',
-            'title' => 'required|regex:/(^[A-Za-z0-9\.\,\+\-\?\! ]+$)+/|min:3|max:100',
+            'title' => 'required|min:3|max:100',
             'description' => 'required|max:2000',
             'social_description' => 'max:200',
         ]);
@@ -129,7 +129,7 @@ class ManageSubPlebbitsController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'title' => 'regex:/(^[A-Za-z0-9\.\,\+\-\?\! ]+$)+/|min:3|max:100',
+            'title' => 'required|min:3|max:100',
             'description' => 'max:2000',
             'social_description' => 'max:200',
             'moderator' => 'moderator|moderator_valid',

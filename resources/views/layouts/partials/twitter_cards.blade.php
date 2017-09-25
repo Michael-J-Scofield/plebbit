@@ -8,6 +8,7 @@
     @endif
     <meta property="twitter:site" content="@plebbit">
     <meta name="twitter:description" content="@if(isset($subPlebbit->description_social) && !empty($subPlebbit->description_social)){{$subPlebbit->description_social}}@else The only place where stealing memes is legal @endif" />
+    <meta name="description" content="@if(isset($subPlebbit->description_social) && !empty($subPlebbit->description_social)){{$subPlebbit->description_social}}@else Plebbit is the #1 platform controlled by the users. Which also makes it the best freedom of speech platform! So Be warned redditors. Plebbit is on the rise!@endif" />
 
     @if(isset($thread->title) && !empty($thread->title))
         <meta property="twitter:title" content="@php echo substr($thread->title, 0, 47); @endphp @if(strlen($thread->title > 47))...@endif • /p/@if(isset($subPlebbit)){{$subPlebbit->name}}@endif">
