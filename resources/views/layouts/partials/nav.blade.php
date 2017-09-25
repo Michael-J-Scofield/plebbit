@@ -55,7 +55,7 @@
                 <div style="height: inherit; display: inline-block; font-family: Raleway; font-weight: 500;">
                     {{ config('app.name', 'Plebbit') }}
                     @if(isset($subPlebbit) && $subPlebbit->icon)
-                        <img style="height: 48px; margin-top: -11px;" src="/images/plebbits/icons/{{$subPlebbit->icon}}" alt="plebbit">
+                        <img style="height: inherit; margin-top: -11px;" src="/images/plebbits/icons/{{$subPlebbit->icon}}" alt="plebbit">
                     @else
                         <img style="height: inherit; margin-top: -14px;" src="/images/logo.png" alt="plebbit">
                     @endif
