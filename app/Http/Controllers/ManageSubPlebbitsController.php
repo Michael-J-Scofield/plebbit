@@ -156,9 +156,9 @@ class ManageSubPlebbitsController extends Controller
                 unlink('images/plebbits/icons/' . $plebbit->icon);
             }
             $randomHash =  substr($icon->getClientOriginalName(), 0, 10) . str_random(40);
-            $newName = 'images/plebbits/icons/' . $randomHash . '.jpg';
+            $newName = 'images/plebbits/icons/' . $randomHash . '.png';
             Image::make($icon->getRealPath())->fit(107, 59)->save($newName);
-            $plebbit->icon = $randomHash . '.jpg';
+            $plebbit->icon = $randomHash . '.png';
         }
 
         if ($request->input('delete_header') == 'on') {
