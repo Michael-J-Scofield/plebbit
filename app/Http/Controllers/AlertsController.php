@@ -43,7 +43,7 @@ class AlertsController extends Controller
             ->where('parent_id', $reply->id)
             ->where('user_id', $user->id)
             ->first();
-        
+
         if (!$parent_comment || !$reply || !$thread) {
             return Redirect('/');
         }
