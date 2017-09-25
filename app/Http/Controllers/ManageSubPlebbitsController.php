@@ -22,6 +22,8 @@ class ManageSubPlebbitsController extends Controller
      */
     public function __construct(ValidationFactory $validationFactory)
     {
+        $this->middleware('auth', ['except' => ['loadcss']]);
+
         $validationFactory->extend(
             'moderator',
             function ($attribute, $value, $parameters) {
@@ -55,15 +57,11 @@ class ManageSubPlebbitsController extends Controller
 
     public function getNewSubPlebbit()
     {
-        $this->middleware('auth');
-
         return view('subPlebbits.newSubPlebbit');
     }
 
     public function postNewSubPlebbit(Request $request)
     {
-        $this->middleware('auth');
-
         $this->validate($request, [
             'name' => 'required|unique:sub_plebbits|max:60|regex:/(^[A-Za-z0-9\.\,\+\-\?\! ]+$)+/|min:3|alpha_dash',
             'title' => 'required|min:3|max:100',
@@ -87,8 +85,6 @@ class ManageSubPlebbitsController extends Controller
 
     public function getEditPlebbit($name, Request $request, subPlebbit $subPlebbit, Moderator $moderator)
     {
-        $this->middleware('auth');
-
         $user = Auth::user();
         $plebbit = $subPlebbit->where('name', $name)->first();
         if (!$plebbit) {
@@ -114,8 +110,6 @@ class ManageSubPlebbitsController extends Controller
 
     public function postEditPlebbit($name, Request $request, subPlebbit $subPlebbit, Moderator $moderator)
     {
-        $this->middleware('auth');
-
         $user = Auth::user();
         $plebbit = $subPlebbit->where('name', $name)->first();
         if (!$plebbit) {
@@ -223,8 +217,6 @@ class ManageSubPlebbitsController extends Controller
 
     public function getEditPlebbitCss($name, Request $request, subPlebbit $subPlebbit)
     {
-        $this->middleware('auth');
-
         $user = Auth::user();
         $plebbit = $subPlebbit->where('name', $name)->first();
         if (!$plebbit) {
@@ -243,8 +235,6 @@ class ManageSubPlebbitsController extends Controller
 
     public function postEditPlebbitCss($name, Request $request, subPlebbit $subPlebbit)
     {
-        $this->middleware('auth');
-
         $user = Auth::user();
         $plebbit = $subPlebbit->where('name', $name)->first();
         if (!$plebbit) {
