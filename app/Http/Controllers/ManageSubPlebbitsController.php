@@ -87,6 +87,8 @@ class ManageSubPlebbitsController extends Controller
 
     public function getEditPlebbit($name, Request $request, subPlebbit $subPlebbit, Moderator $moderator)
     {
+        $this->middleware('auth');
+
         $user = Auth::user();
         $plebbit = $subPlebbit->where('name', $name)->first();
         if (!$plebbit) {
