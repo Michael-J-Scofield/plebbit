@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Lang;
 use Illuminate\Validation\Rule;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -61,6 +62,37 @@ class LoginController extends Controller
         }
         $this->middleware('guest')->except('logout');
     }
+
+    public function login(Request $request)
+    {
+        $this->validate($request, [
+            'username'    => 'required',
+            'password' => 'required',
+        ]);
+
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
+
+        $login_type = filter_var($request->input('username'), FILTER_VALIDATE_EMAIL )
+            ? 'email'
+            : 'username';
+
+        $request->merge([
+            $login_type => $request->input('username')
+        ]);
+
+        if (Auth::attempt($request->only($login_type, 'password'))) {
+            return redirect()->intended($this->redirectPath());
+        }
+
+        $this->incrementLoginAttempts($request);
+
+        return $this->sendFailedLoginResponse($request);
+    }
+
 
     public function validateLogin(Request $request)
     {

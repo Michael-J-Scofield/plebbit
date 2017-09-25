@@ -63,7 +63,7 @@ class MessagesController extends Controller
         $user = $request->user();
 
         $messages = $messaging->select('username as from', 'code', 'subject', 'private_messages.active', 'private_messages.created_at')
-            ->join('users', 'private_messages.to_user_id', '=', 'users.id')
+            ->join('users', 'private_messages.user_id', '=', 'users.id')
             ->where('to_user_id', $user->id)
             ->orderBy('private_messages.last_pm_timestamp', 'desc')->paginate(50);
 
