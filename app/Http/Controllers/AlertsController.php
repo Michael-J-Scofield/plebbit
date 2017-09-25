@@ -29,11 +29,21 @@ class AlertsController extends Controller
             return Redirect('/');
         }
 
-        $parent_comment = $post->where('id', $alert->post_id)->first();
-        $reply = $post->where('id', $alert->reply_post_id)->first();
+        $parent_comment = $post->select( 'posts.id','username as user_display_name', 'score', 'thread_id', 'comment', 'parent_id', 'posts.created_at')
+            ->where('posts.id', $alert->post_id)
+            ->join('users', 'posts.user_id', '=', 'users.id')
+            ->first();
+        $reply = $post->select( 'posts.id', 'username as user_display_name', 'thread_id', 'score', 'comment', 'parent_id', 'posts.created_at')
+            ->where('posts.id', $alert->reply_post_id)
+            ->join('users', 'posts.user_id', '=', 'users.id')
+            ->first();
         $thread = $thread->select('id', 'code', 'title')->where('id', $parent_comment->thread_id)->first();
-        $user_reply = $post->where('parent_id', $reply->id)->where('user_id', $user->id)->first();
-
+        $user_reply = $post->select( 'posts.id', 'username as user_display_name', 'score', 'thread_id', 'comment', 'parent_id', 'posts.created_at')
+            ->join('users', 'posts.user_id', '=', 'users.id')
+            ->where('parent_id', $reply->id)
+            ->where('user_id', $user->id)
+            ->first();
+        
         if (!$parent_comment || !$reply || !$thread) {
             return Redirect('/');
         }

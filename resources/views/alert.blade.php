@@ -86,7 +86,7 @@
                                     <a style="color: inherit;" href="javascript:votepost('{{$user_reply->id}}', 'up');"><i id="{{$user_reply->id}}_up_post" data-voted="no" data-vote="up" data-post="{{$user_reply->id}}" class="fa fa-sort-asc"></i></a>
                                 </div>
                                 <div class="row stack">
-                                    <span id="{{$reply->id}}_counter_post" class="stack count">{{$reply->score}}</span>
+                                    <span id="{{$reply->id}}_counter_post" class="stack count">{{$user_reply->score}}</span>
                                 </div>
                                 <div style="margin-top: -15px; font-size: 20px;" class="row stack">
                                     <a style="color: inherit;" href="javascript:votepost('{{$user_reply->id}}', 'down');"><i id="{{$user_reply->id}}_down_post" data-voted="no" data-vote="down" data-thread="{{$user_reply->thread_id}}" class="fa fa-sort-desc stack"></i></a>

@@ -24,13 +24,26 @@ class Post extends Authenticatable
     public function postsbyUser($id, $sort, $skip, $amount)
     {
         if ($sort == 'popular') {
-            return $this->where('user_id', $id)->orderBy('score', 'DESC')->orderBy('created_at', 'DESC')->skip($skip)->take($amount)->get();
+            return $this->select('posts.id', 'thread_id', 'username as user_display_name', 'parent_id', 'upvotes', 'downvotes', 'score', 'comment', 'posts.created_at')
+                ->join('users', 'posts.user_id', '=', 'users.id')
+                ->where('user_id', $id)
+                ->orderBy('score', 'DESC')
+                ->orderBy('created_at', 'DESC')
+                ->skip($skip)->take($amount)->get();
         }
         else if ($sort == 'top') {
-            return $this->where('user_id', $id)->orderBy('score', 'DESC')->skip($skip)->take($amount)->get();
+            return $this->select('posts.id', 'thread_id', 'username as user_display_name', 'parent_id', 'upvotes', 'downvotes', 'score', 'comment', 'posts.created_at')
+                ->join('users', 'posts.user_id', '=', 'users.id')
+                ->where('user_id', $id)
+                ->orderBy('score', 'DESC')
+                ->skip($skip)->take($amount)->get();
         }
         else if ($sort == 'new') {
-            return $this->where('user_id', $id)->orderBy('created_at', 'DESC')->skip($skip)->take($amount)->get();
+            return $this->select('posts.id', 'thread_id', 'username as user_display_name', 'parent_id', 'upvotes', 'downvotes', 'score', 'comment', 'posts.created_at')
+                ->join('users', 'posts.user_id', '=', 'users.id')
+                ->where('user_id', $id)
+                ->orderBy('created_at', 'DESC')
+                ->skip($skip)->take($amount)->get();
         }
         else {
             return false;

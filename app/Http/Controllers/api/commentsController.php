@@ -69,7 +69,6 @@ class commentsController extends Controller
 
         $post = new Post();
         $post->user_id = $user->id;
-        $post->user_display_name = htmlspecialchars($user->username);
         $post->thread_id = $thread->id;
         if ($parent) {
             $post->parent_id = $parent->id;
@@ -112,13 +111,21 @@ class commentsController extends Controller
         }
 
         if ( (!$sort) || $sort == 'popular' ) {
-            $comments = $post->select('id', 'user_display_name', 'parent_id', 'upvotes', 'downvotes', 'score', 'comment', 'created_at')->where('thread_id', $thread->id)->orderBy('score', 'desc')->skip($skip)->take($take)->get();
+            $comments = $post->select('posts.id', 'username as user_display_name', 'parent_id', 'upvotes', 'downvotes', 'score', 'comment', 'posts.created_at')
+                ->join('users', 'posts.user_id', '=', 'users.id')
+                ->where('thread_id', $thread->id)
+                ->orderBy('score', 'desc')
+                ->skip($skip)->take($take)->get();
             $commentParentIds = $comments->pluck('parent_id')->toArray();
             $head_comments = $post->whereIn('id', $commentParentIds)->orderBy('score', 'desc')->orderBy('created_at', 'desc')->get();
             $comments = $head_comments->merge($comments);
             //this trash needs a lot of improvement i know ffs
         } else if ($sort == 'new') {
-            $comments = $post->select('id', 'user_display_name', 'parent_id', 'upvotes', 'downvotes', 'score', 'comment', 'created_at')->where('thread_id', $thread->id)->orderBy('created_at', 'DESC')->skip($skip)->take($take)->get();
+            $comments = $post->select('posts.id', 'username as user_display_name', 'parent_id', 'upvotes', 'downvotes', 'score', 'comment', 'posts.created_at')
+                ->join('users', 'posts.user_id', '=', 'users.id')
+                ->where('thread_id', $thread->id)
+                ->orderBy('created_at', 'DESC')
+                ->skip($skip)->take($take)->get();
         } else {
             return Response()->json([
                 'error' => 'no such sorting method'

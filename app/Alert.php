@@ -26,8 +26,9 @@ class Alert extends Authenticatable
     {
         $alertsArray = [];
 
-        $mentions = $this->select( 'user_display_name', 'thread_id', 'comment', 'parent_id', 'title AS thread_title', 'alerts.code', 'alerts.created_at')
+        $mentions = $this->select( 'username as user_display_name', 'thread_id', 'comment', 'parent_id', 'title AS thread_title', 'alerts.code', 'alerts.created_at')
             ->join('posts', 'alerts.reply_post_id', '=', 'posts.id')
+            ->join('users', 'posts.user_id', '=', 'users.id')
             ->join('threads', 'posts.thread_id', '=', 'threads.id')
             ->where('alerts.user_id', $user_id)
             ->where('alerts.active', 1)
