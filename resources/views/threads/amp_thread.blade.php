@@ -14,11 +14,15 @@
         @endif
       }
     </script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
     <link rel="canonical" href="{{ url('/') }}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{ str_slug($thread->title) }}">
     <style amp-custom>
         @php
             include 'css/amp_grid.min.css';
         @endphp
+        body {
+            font-family: roboto, sans-serif;
+        }
         #app {
             max-width: 768px;
             margin:auto;
