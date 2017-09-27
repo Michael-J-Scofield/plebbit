@@ -20,8 +20,9 @@
         @php
             include 'css/amp_grid.min.css';
         @endphp
-        body {
+        * {
             font-family: roboto, sans-serif;
+            font-weight: 400;
         }
         #app {
             max-width: 768px;
@@ -50,7 +51,7 @@
         a {
             color: #3097D1;
             text-decoration: none;
-            font-weight:100;
+            font-weight:300;
         }
         #subplebbit_name {
             text-align: center;
@@ -61,7 +62,7 @@
             color: #222;
         }
         #title h1 {
-            font-weight:200;
+            font-weight:300;
             font-size: 16px;
             overflow-x: hidden;
             margin-top: 5px;
@@ -124,19 +125,8 @@
             line-height: 1.8;
             text-decoration: none;
         }
-        .button_more {
-            display: block;
-            font-size: 18px;
-            font-weight: 700;
-            text-align: center;
-            color: #fff;
-            background: #24a0ed;
-            margin-top: 24px;
-            margin-bottom: 10px;
-            padding-top: 8px;
-            padding-bottom: 8px;
-            line-height: 1.8;
-            text-decoration: none;
+        .button_more a {
+            color: white;
         }
         .padding-top {
             padding-top: 10px;
@@ -151,7 +141,7 @@
             word-break: keep-all;
         }
         .comment_body p {
-            font-weight: 500;
+            font-weight: 400;
             font-size: 13px;
             margin: 2px 0 5px 0;
             color: #222;
@@ -175,12 +165,12 @@
         .comment_header span {
             color: #a5a4a4;
             font-size: 13px;
-            font-weight: 100;
+            font-weight: 300;
         }
         .comment_header span a {
             color: #a5a4a4;
             font-size: 13px;
-            font-weight: 100;
+            font-weight: 300;
         }
         .thumbnail amp-img img {
             border-radius: 50%;
