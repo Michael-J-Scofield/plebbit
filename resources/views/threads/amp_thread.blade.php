@@ -1,508 +1,318 @@
-@extends('layouts.app')
+@extends('layouts.amp_app')
 
-@section('title') {{$thread->title}} @endsection
-
-@include('layouts.partials.twitter_cards')
-
-@section('stylesheets')
-    <script async src="https://cdn.ampproject.org/v0.js"></script>
-    <link rel="canonical" href="{{ url('/') }}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}">
+@section('meta')
     <script type="application/ld+json">
       {
         "@context": "http://schema.org",
         "@type": "NewsArticle",
-        "headline": "Open-source framework for publishing content",
-        "datePublished": "2015-10-07T12:02:41Z",
+        "headline": "{{$thread->title}}",
+        "datePublished": "{{$thread->created_at}}",
+        @if($thread->media_type == 'image')
         "image": [
-          "logo.jpg"
+          "{{$thread->link}}"
         ]
+        @endif
       }
     </script>
-    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
-
-    <link rel="stylesheet" href="{{ asset('css/thread.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/subplebbit.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/ladda-themeless.min.css') }}">
-    <style>
-        .header {
-            background-image: url("/images/plebbits/headers/{{$subPlebbit->header}}");
-            background-position: center;
-            @if($subPlebbit->header_type == 'fit')
-            background-size: cover;
-            @endif
+    <link rel="canonical" href="{{ url('/') }}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{ str_slug($thread->title) }}">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <style amp-custom>
+        @php
+            include 'css/amp_grid.min.css';
+        @endphp
+        #app {
+            max-width: 768px;
+            margin:auto;
+        }
+        .topNav {
+            height: 48px;
+            position: relative;
+            box-shadow: 0 0 5px 0 rgba(0,0,0,.2);
             width: 100%;
-            @if(!$subPlebbit->header)
-            margin-top: -22px;
-            background: {{$subPlebbit->header_color}};
-            @else
-            margin-top: 0;
-        @endif
-}
-        #stripe {
-            background-color: @if($subPlebbit->header_color) {{ $subPlebbit->header_color }} @else grey @endif;
-            height: 20px;
-            width: 100%;
-            margin-top: -22px;
-            position: sticky;
+            z-index: 11;
+            -webkit-user-select: none;
+            border-bottom: 1px solid #efefed;
+            background-color: #fff;
+        }
+        #nav_header {
+            position: absolute;
             z-index: 1;
+            top: 15px;
+            left: 10px;
+            color: #737373;
         }
-        @if($subPlebbit->header_color)
-                #header_name {
-            color: {{$subPlebbit->color}};
+        #nav_img {
+            margin-left: 65px;
         }
-        #header_title {
-            color: {{$subPlebbit->color}};
+        a {
+            color: #3097D1;
+            text-decoration: none;
+            font-weight:100;
         }
-        @endif
+        #subplebbit_name {
+            text-align: center;
+            margin-top: 10px;
+            font-size:14px;
+        }
+        h3 {
+            color: #222;
+        }
+        #title h1 {
+            font-weight:200;
+            font-size: 16px;
+            overflow-x: hidden;
+            margin-top: 5px;
+            line-height: normal;
+        }
+        #title h1 a {
+            color: #222;
+        }
+        #poster_date {
+            margin-top: -10px;
+            font-size: 12px;
+        }
+        #poster_date span a {
+            color: #a5a4a4;
+        }
+        #poster_date span {
+            color: #a5a4a4;
+            font-weight: 100;
+        }
+        .post {
+            margin-top: 10px;
+        }
+        .post #post p {
+            font-size: 12px;
+            line-height: 1.3;
+        }
+        .image-wrapper .image-wrapper amp-img {
+            height: auto;
+            width: auto;
+            max-width: 100%;
+            max-height: 600px;
+        }
+        .unknown-size img {
+            object-fit: contain; /* or 'fill', or 'cover', etc */
+        }
+        .commentsHeader {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f5f5f5;
+            text-align: center;
+        }
+        .commentsHeader a {
+            font-size: 18px;
+            color: #545452;
+        }
+        #post_count {
+            margin-bottom: 10px;
+        }
+        .button_more, .button_more:visited {
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            color: #fff;
+            background: #24a0ed;
+            margin-top: 24px;
+            margin-bottom: 10px;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            line-height: 1.8;
+            text-decoration: none;
+        }
+        .padding-top {
+            padding-top: 10px;
+        }
+        .comment {
+            margin-left: -15px;
+            text-align: left;
+            border-top: 1px solid #efefed;
+        }
+        .comment_body {
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        .comment_body p {
+            font-weight: 500;
+            font-size: 13px;
+            margin: 2px 0 5px 0;
+            color: #222;
+        }
+        .post {
+            border-bottom: 1px solid #efefed;
+        }
+        .post .title a, .post .title a:visited {
+            font-size: 18px;
+            white-space: normal;
+            overflow: hidden;
+            color: #0079d3;
+        }
+        #post_wrapper {
+            margin-left: 30px;
+            margin-right: -30px;
+        }
+        .comment_header span {
+            color: #a5a4a4;
+            font-size: 13px;
+            font-weight: 100;
+        }
+        .comment_header span a {
+            color: #a5a4a4;
+            font-size: 13px;
+            font-weight: 100;
+        }
+        .thumbnail amp-img img {
+            border-radius: 50%;
+        }
+        .overflow {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+        #content_wrapper {
+            margin-left: -10px;
+        }
     </style>
-    @if($subPlebbit->custom_css)
-        <link rel="stylesheet" href="{{asset('cdn/css/'.$subPlebbit->name.'.css')}}">
+    @if($thread->media_type == 'youtube')
+        <script async custom-element="amp-youtube" src="https://cdn.ampproject.org/v0/amp-youtube-0.1.js"></script>
     @endif
+    @if($thread->media_type == 'vimeo')
+        <script async custom-element="amp-vimeo" src="https://cdn.ampproject.org/v0/amp-vimeo-0.1.js"></script>
+    @endif
+    <title>{{$thread->title}}</title>
 @endsection
 
-@section('content')
 
-    @if($subPlebbit->header)
-        <div id="stripe" data-spy="affix"></div>
-    @endif
-    <div class="header">
-        <h1 id="header_name">{{$subPlebbit->name}}</h1>
-        <p id="header_title">{{ $subPlebbit->title }}</p>
-    </div>
+@section('content')
+    <nav class="topNav">
+        <a href="{{ url('/') }}">
+            <div id="nav_header">Plebbit</div>
+            <amp-img id="nav_img" src="{{ url('/') }}/images/logo.png" height="48" width="86"></amp-img>
+        </a>
+    </nav>
+
+    @php
+        $user = new \App\User();
+        $postername = $user->select('username')->where('id', $thread->poster_id)->first();
+    @endphp
 
     <div class="container">
-        <div class="panel">
-            <div class="modal-header">
-                <div class="row">
-                    <div style="width: 40px; margin-top: -5px;" class="votes col-xs-2 col-sm-1">
-                        <div style="margin-left: 20px;" class="wrap">
-                            <div style="margin-bottom: -5px; font-size: 20px;" class="row stack">
-                                <i id="{{$thread->id}}_up" data-voted="no" data-vote="up" data-thread="{{$thread->code}}" class="fa fa-sort-asc vote"></i>
+        <div id="content_wrapper" class="row">
+            <div id="subplebbit_name">
+                <a href="/p/{{$subPlebbit->name}}">/p/{{$subPlebbit->name}}</a>
+            </div>
+            <div id="title">
+                <h1><a href="{{ url('/') }}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{ str_slug($thread->title) }}">{{$thread->title}}</a></h1>
+            </div>
+            <div id="poster_date">
+                <span><a href="/u/{{$postername->username}}">u/{{$postername->username}}</a> - {{Carbon\Carbon::parse($thread->created_at)->diffForHumans()}}</span>
+            </div>
+            <div id="post">
+                @if($thread->link || $thread->post)
+                    <div class="post">
+                        @if($thread->link)
+                            @if($thread->media_type == 'image')
+                                <div class="image-wrapper">
+                                    <amp-img class="unknown-size" src="{{$thread->link}}" alt="Welcome" width=300 height=200 height="1"></amp-img>
+                                </div>
+                            @elseif($thread->media_type == 'video')
+                                <amp-video controls
+                                           width="640"
+                                           height="360"
+                                           layout="responsive">
+                                    <source src="{{$thread->link}}"
+                                            type="video/mp4" />
+                                    <div fallback>
+                                        <p>This browser does not support the video element.</p>
+                                    </div>
+                                </amp-video>
+                            @elseif($thread->media_type == 'youtube')
+                                @php preg_match("#(?<=v=)[a-zA-Z0-9-]+(?=&)|(?<=v\/)[^&\n]+(?=\?)|(?<=v=)[^&\n]+|(?<=youtu.be/)[^&\n]+#", $thread->link, $matches); @endphp
+                                <amp-youtube
+                                        data-videoid="{{$matches[0]}}"
+                                        layout="responsive"
+                                        width="480" height="270"></amp-youtube>
+                            @elseif($thread->media_type == 'vimeo')
+                                @php $vimeoId = (int) substr(parse_url($thread->link, PHP_URL_PATH), 1); @endphp
+                                <amp-vimeo
+                                        data-videoid="{{$vimeoId}}"
+                                        layout="responsive"
+                                        width="500" height="281"></amp-vimeo>
+                            @else
+                                <a href="{{$thread->link}}">{{$thread->link}}</a>
+                            @endif
+                        @endif
+
+                        @if($thread->post)
+                            <div id="post">
+                                {!! $thread->post !!}
                             </div>
-                            <div class="row stack">
-                                <span id="{{$thread->id}}_counter" class="stack count">{{$thread->upvotes - $thread->downvotes}}</span>
+                        @endif
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+    <div class="commentsHeader">
+        <div id="post_count">
+            <a href="{{ url('/') }}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{ str_slug($thread->title) }}">
+                {{$thread->reply_count}} {{str_plural('comment', $thread->reply_count)}}
+            </a>
+        </div>
+        <div class="container">
+            <div class="row">
+                @php
+                    $comment = new \App\Post();
+                    $comments = $comment->where('thread_id', $thread->id)->select('user_id', 'thread_id', 'upvotes', 'downvotes', 'score', 'comment', 'username', 'posts.created_at')
+                    ->leftJoin('users', 'posts.user_id', '=', 'users.id')
+                    ->where('parent_id', null)
+                    ->take(30)->get();
+                @endphp
+                @foreach($comments as $comment)
+                    <div class="comment">
+                        <div class="comment_header overflow">
+                            <span class="commentHeader__username"><a href="/u/{{$comment->username}}">u/{{$comment->username}}</a></span>
+                            <span class="commentHeader__seperator"> • </span>
+                            <span class="commentHeader__timestamp"> {{date('M d Y', $comment->created_at->timestamp)}} </span>
+                        </div>
+                        <div class="comment_body">
+                            <p>{{$comment->comment}}</p>
+                        </div>
+                    </div>
+                @endforeach
+
+                <a href="{{ url('/') }}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{ str_slug($thread->title) }}" class="button_more">View more comments</a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            @php
+            $thread = new \App\Thread();
+            $top_posts = $thread->orderBy('score', 'desc')->take(5)->get();
+            @endphp
+
+            @if($top_posts->count() > 0)
+                <div id="title">
+                    <h1 class="center padding-top">Top posts in <a href="/p/{{$subPlebbit->name}}">/p/{{$subPlebbit->name}}</a></h1>
+                </div>
+                @foreach($top_posts as $thread)
+                    <div class="post row">
+                        <div class="col-2-sm">
+                            <div class="thumbnail">
+                                <amp-img src="@if($thread->thumbnail !== null){{$thread->thumbnail}} @elseif($thread->link) {{url('/')}}/images/link_thumb.png @else {{url('/')}}/images/text_thumb.png @endif" alt="{{$thread->title}}" alt="Welcome" width=66 height=66 ></amp-img>
                             </div>
-                            <div style="margin-top: -5px; font-size: 20px;" class="row stack">
-                                <i id="{{$thread->id}}_down" data-voted="no" data-vote="down" data-thread="{{$thread->code}}" class="fa fa-sort-desc stack vote"></i>
+                        </div>
+                        <div id="post_wrapper" class="col-9-sm">
+                            <div class="title">
+                                <a href="/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{str_slug($thread->title)}}">{{$thread->title}}</a>
                             </div>
                         </div>
                     </div>
-                    <div style="margin-top: -4px;" class="col-xs-10 col-sm-11">
-                        <h4><a href="@if($thread->link){{$thread->link}}@else @endif">{{$thread->title}}</a></h4>
-                        @php
-                            $user = new \App\User();
-                            $postername = $user->select('username')->where('id', $thread->poster_id)->first();
-                        @endphp
-                        <p class="overflow" style="margin-bottom: -5px;">placed by <a href="/u/{{$postername->username}}">{{$postername->username}}</a> {{Carbon\Carbon::parse($thread->created_at)->diffForHumans()}} in
-                            <a href="/p/{{$subPlebbit->name}}">{{$subPlebbit->name}}</a></p>
-                    </div>
-                </div>
-            </div>
-            @if($thread->link || $thread->post)
-                <div class="post">
-                    @if($thread->link)
-                        @if($thread->media_type == 'image')
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <amp-img style="max-width: 100%; max-height: 600px;" src="{{$thread->link}}" alt="{{$thread->title}}"></amp-img>
-                                </div>
-                            </div>
-                        @elseif($thread->media_type == 'video')
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <amp-video style="max-width: 100%; max-height: 600px;" controls src="{{$thread->link}}" autoplay></amp-video>
-                                </div>
-                            </div>
-                        @elseif($thread->media_type == 'youtube')
-                            @php preg_match("#(?<=v=)[a-zA-Z0-9-]+(?=&)|(?<=v\/)[^&\n]+(?=\?)|(?<=v=)[^&\n]+|(?<=youtu.be/)[^&\n]+#", $thread->link, $matches); @endphp
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <iframe style="max-width: 100%;" width="800" height="413" src="https://www.youtube.com/embed/{{$matches[0]}}" frameborder="0" allowfullscreen></iframe>
-                                </div>
-                            </div>
-                        @elseif($thread->media_type == 'vimeo')
-                            @php $vimeoId = (int) substr(parse_url($thread->link, PHP_URL_PATH), 1); @endphp
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <iframe style="max-width: 100%;" width="800" height="413" src="https://player.vimeo.com/video/{{$vimeoId}}" frameborder="0" allowfullscreen></iframe>
-                                </div>
-                            </div>
-                        @else
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <a href="{{$thread->link}}">{{$thread->link}}</a>
-                                </div>
-                            </div>
-                        @endif
-                    @endif
-
-                    @if($thread->post)
-                        {!! $thread->post !!}
-                    @endif
-                </div>
-                @if($mod)
-                    <p style="padding-left: 10px; margin-bottom: 5px;"><a href="javascript:deleteThread()">Delete</a></p>
-                @endif
+                @endforeach
             @endif
+            <a href="{{ url('/') }}/p/{{$subPlebbit->name}}" class="button_more">View more /p/{{$subPlebbit->name}} posts</a>
         </div>
-
-        <div style="margin-top: -10px;" class="panel">
-            <div class="panel-body">
-                <div class="col-md-5">
-                    <h5>Place a comment</h5>
-                    <textarea data-thread="{{$thread->id}}" placeholder="Comment" name="comment" id="comment" cols="30" rows="4" class="form-control commentbox"></textarea>
-                    <button style="margin-top: 5px;" class="btn btn-primary submitpostbtn pull-right ladda-button" data-style="slide-up">Post comment</button>
-                    <div class="errors"></div>
-                </div>
-            </div>
-        </div>
-
-
-        <select onchange="sortComments($(this))" name="sortcomments">
-            <option value="popular">Popular</option>
-            <option value="new">New</option>
-        </select>
-
-        <div class="mynewcomments"></div>
-        <div class="comments panel-body"></div>
-
     </div>
-
-    @include('layouts.partials.loginModal')
-
-@endsection
-
-@section('scripts')
-    <script src="{{ asset('js/moment.js') }}"></script>
-    <script src="{{ asset('js/spin.min.js') }}"></script>
-    <script src="{{ asset('js/ladda.min.js') }}"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
-    @include('layouts.partials.vote')
-
-    <script>
-        $('#stripe').affix({
-            offset: {
-                top: $('#nav').height()
-            }
-        });
-        // Post comments
-        var thread = {{$thread->id}};
-
-        $('.submitpostbtn').click(function() {
-            _this = $(this);
-            var l = Ladda.create(this);
-            l.start();
-
-            obj = _this.prev();
-            comment = obj.val();
-            parent = obj.attr('data-parent');
-
-            @if(Auth::check())
-                data = {'thread': thread, 'parent': parent, 'comment': comment, 'api_token': '{{Auth::user()->api_token}}'};
-
-            $.post( "/api/comments/add", data, function( res ) {
-                if (res.warning) {
-                    $('.errors').empty().append('<span>'+ res.warning +'</span>');
-                }
-                if (res.status === 'success') {
-                    $('.errors').empty();
-                    ago = moment(res.post.created_at).utcOffset('+0400').format('YYYY-MM-DD HH:mm')
-                    ago = moment(ago).fromNow();
-                    $('.mynewcomments').append(
-                        '        <div class="panel comment" id="post_panel_'+res.post.id+'">' +
-                        '            <div class="panel-body">' +
-                        '                <div class="row">' +
-                        '                    <div style="width: 40px; margin-top: -5px;" class="votes col-xs-2 col-sm-1">' +
-                        '                        <div style="margin-left: 20px;" class="wrap">' +
-                        '                            <div style="margin-bottom: -15px; font-size: 20px;" class="row stack">' +
-                        '                                <a style="color: inherit;" href="javascript:votepost('+res.post.id+', `up`);"><i id="'+ res.post.id +'_up_post" data-voted="no" data-vote="up" data-post="'+res.post.id+'" class="fa fa-sort-asc"></i></a>' +
-                        '                            </div>' +
-                        '                            <div class="row stack">' +
-                        '                                <span id="'+res.post.id+'_counter_post" class="stack">'+res.post.score+'</span>' +
-                        '                            </div>' +
-                        '                            <div style="margin-top: -15px; font-size: 20px;" class="row stack">' +
-                        '                                <a style="color: inherit;" href="javascript:votepost('+res.post.id+', `down`);"><i id="'+res.post.id+'_down_post" data-voted="no" data-vote="down" data-thread="'+ res.post.id +'" class="fa fa-sort-desc stack"></i></a>' +
-                        '                            </div>' +
-                        '                        </div>' +
-                        '                    </div>' +
-                        '                    <div class="col-xs-10 col-sm11">' +
-                        '                        <span><a href="/u/'+res.post.user_display_name+'">'+res.post.user_display_name+'</a> '+ago+'</span>' +
-                        '                        <p>'+res.post.comment.replace(/(?:\r\n|\r|\n)/g, '<br />')+'</p>' +
-                        '                        <div class="linkwrapper"><a style="color: grey;" href="javascript:reply('+res.post.id+');">Reply</a></div>' +
-                        '                        <div id="comment_box_app_'+res.post.id+'"></div>' +
-                        '                    </div>' +
-                        '                </div>' +
-                        '            </div>' +
-                        '        </div>'
-                    );
-                }
-                l.stop();
-                obj.val('');
-            });
-            @else
-            $('#loginModal').modal('show');
-            $('#loginModalMessage').text('to comment');
-            l.stop();
-            @endif
-        });
-    </script>
-
-    <script>
-
-        // Load comments
-        var url = '/api/comments/load';
-
-        var page = 1;
-        loadcomments(page, 'popular');
-
-        function loadcomments(page, sort) {
-            load_comments = $('#load_more_comments');
-            if (load_comments.length > 0) {
-                document.getElementById('load_more_comments').remove();
-            }
-            @if(Auth::check())
-                data = {'thread': thread, 'sort': sort, 'page': page, 'api_token': '{{Auth::user()->api_token}}'};
-            @else
-                data = {'thread': thread, 'sort': sort, 'page': page};
-            @endif
-
-            $.post(url, data, function (res) {
-                if (res.error) {
-                    console.log("an error occured while loading the posts");
-                    return;
-                }
-                posts = res.posts;
-                for (var i = 0; i < posts.length; i++) {
-                    post = posts[i];
-                    if (!post.parent_id) {
-                        created = moment(post.created_at).utcOffset('+0400').format('YYYY-MM-DD HH:mm');
-                        created = moment(created);
-                        ago = created.fromNow();
-                        if (post.score > 1000) {
-                            format_score = numeral(post.score).format('0.0a');
-                        } else {
-                            format_score = post.score;
-                        }
-
-                        $('.comments').append(
-                            '        <div style="margin-top: -10px;" class="panel comment row" id="post_panel_' + post.id + '">' +
-                            '            <div class="panel-body">' +
-                            '                <div class="row">' +
-                            '                    <div style="width: 40px; margin-top: -5px;" class="votes col-xs-2 col-sm-1">' +
-                            '                        <div style="margin-left: 20px;" class="wrap">' +
-                            '                            <div style="margin-bottom: -15px; font-size: 20px;" class="row stack">' +
-                            '                                <a style="color: inherit;" href="javascript:votepost(' + post.id + ', `up`);"><i id="' + post.id + '_up_post" data-voted="no" data-vote="up" data-post="' + post.id + '" class="fa fa-sort-asc"></i></a>' +
-                            '                            </div>' +
-                            '                            <div class="row stack">' +
-                            '                                <span id="' + post.id + '_counter_post" class="stack">' + format_score + '</span>' +
-                            '                            </div>' +
-                            '                            <div style="margin-top: -15px; font-size: 20px;" class="row stack">' +
-                            '                                <a style="color: inherit;" href="javascript:votepost(' + post.id + ', `down`);"><i id="' + post.id + '_down_post" data-voted="no" data-vote="down" data-thread="' + post.id + '" class="fa fa-sort-desc stack"></i></a>' +
-                            '                            </div>' +
-                            '                        </div>' +
-                            '                    </div>' +
-                            '                    <div class="col-xs-10 col-sm11">' +
-                            '                        <span><a href="/u/' + post.user_display_name + '">' + post.user_display_name + '</a> ' + ago + '</span>' +
-                            '                        <p>' + post.comment.replace(/(?:\r\n|\r|\n)/g, '<br />') + '</p>' +
-                            '                        <div class="linkwrapper"><a style="color: grey;" href="javascript:reply(' + post.id + ');">Reply</a>@if($mod)<a style="margin-left:5px;" href="javascript:deleteComment('+post.id+')">Delete</a>@endif </div>' +
-                            '                        <div id="comment_box_app_' + post.id + '"></div>' +
-                            '                    </div>' +
-                            '                </div>' +
-                            '            </div>' +
-                            '        </div>'
-                        );
-                    }
-                }
-
-                // load replies
-
-                // sort posts
-                posts.sort(function (a, b) {
-                    return a.parent_id - b.parent_id;
-                });
-
-                for (var i = 0; i < posts.length; i++) {
-                    post = posts[i];
-                    if (post.parent_id !== null) {
-                        to_append = $('#post_panel_' + post.parent_id);
-                        created = moment(post.created_at).utcOffset('+0400').format('YYYY-MM-DD HH:mm');
-                        created = moment(created);
-                        ago = created.fromNow();
-                        if (post.score > 1000) {
-                            format_score = numeral(post.score).format('0.0a');
-                        } else {
-                            format_score = post.score;
-                        }
-
-                        to_append.append('' +
-                            '                <div id="post_panel_' + post.id + '" style="margin-left: 20px; width:95%; min-width: 400px;" class="col-xs-12">' +
-                            '                    <div style="width: 40px; margin-top: -5px;" class="votes col-xs-2 col-sm-1">' +
-                            '                        <div style="margin-left: 20px;" class="wrap">' +
-                            '                            <div style="margin-bottom: -15px; font-size: 20px;" class="row stack">' +
-                            '                                <a style="color: inherit;" href="javascript:votepost(' + post.id + ', `up`);"><i id="' + post.id + '_up_post" data-voted="no" data-vote="up" data-post="' + post.id + '" class="fa fa-sort-asc"></i></a>' +
-                            '                            </div>' +
-                            '                            <div class="row stack">' +
-                            '                                <span id="' + post.id + '_counter_post" class="stack">' + format_score + '</span>' +
-                            '                            </div>' +
-                            '                            <div style="margin-top: -15px; font-size: 20px;" class="row stack">' +
-                            '                                <a style="color: inherit;" href="javascript:votepost(' + post.id + ', `down`);"><i id="' + post.id + '_down_post" data-voted="no" data-vote="down" data-thread="' + post.id + '" class="fa fa-sort-desc stack"></i></a>' +
-                            '                            </div>' +
-                            '                        </div>' +
-                            '                    </div>' +
-                            '                    <div class="col-xs-10 col-sm11">' +
-                            '                        <span><a href="/u/' + post.user_display_name + '">' + post.user_display_name + '</a> ' + ago + '</span>' +
-                            '                        <p>' + post.comment.replace(/(?:\r\n|\r|\n)/g, '<br />') + '</p>' +
-                            '                        <div style="margin-bottom:3px;" class="linkwrapper"><a style="color: grey;" href="javascript:reply(' + post.id + ');">Reply</a> @if($mod)<a style="margin-left:5px;" href="javascript:deleteComment(\'+post.id+\')">Delete</a>@endif </div>' +
-                            '                        <div id="comment_box_app_' + post.id + '"></div>' +
-                            '                    </div>' +
-                            '                </div>'
-                        );
-                    }
-                }
-
-                if (res.upvotes) {
-                    for (var i = 0; i < res.upvotes.length; i++) {
-                        upvote = res.upvotes[i];
-                        if (upvote.vote === 1) {
-                            $('#' + upvote.post_id + '_up_post').css('color', '#4CAF50').attr('data-voted', 'yes');
-                        } else {
-                            $('#' + upvote.post_id + '_down_post').css('color', '#F44336').attr('data-voted', 'yes');
-                        }
-                    }
-                }
-
-                page++;
-                if (posts.length > 199) {
-                    $('.comments').append('<a id="load_more_comments" href="javascript:loadcomments(' + page + ');">Load more comments</a>');
-                }
-            });
-        }
-
-        function reply(id) {
-            @if(Auth::check())
-            //                _this = $('#post_panel_' + id);
-            _this = $('#comment_box_app_' + id);
-
-            if ($('#comment_box_' + id).length > 0) {
-                return; // Commentbox already collapsed
-            }
-            _this.append(
-                '         <div class="commentbox" id="comment_box_'+id+'">' +
-                '                <div style="width: 300px;" class="panel-body">' +
-                '                        <textarea placeholder="comment" class="form-control" id="reply_text_'+id+'" cols="30" rows="3"></textarea>' +
-                '                        <span style="color: red;" id="comment_box_alert_'+id+'"></span>' +
-                '                        <a id="post_reply_btn_'+id+'" href="javascript:submit_reply('+id+')" style="margin-top: 5px;" class="btn btn-primary submitpostbtn pull-right ladda-button xd" data-style="slide-up">Post comment</a>' +
-                '                        <a href="javascript:cancel_reply('+id+');" style="margin-top: 5px; margin-right: 5px;" class="btn btn-primary submitpostbtn pull-right ladda-button" data-style="slide-up">Cancel</a>' +
-                '                </div>' +
-                '            </div>');
-            @else
-            $('#loginModal').modal('show');
-            $('#loginModalMessage').text('to reply');
-            @endif
-        }
-
-        function sortComments(_this) {
-            val = _this.val();
-            $('.comments').empty();
-            if (val === 'new') {
-                loadcomments(1, 'new');
-            } else {
-                loadcomments(1, 'popular');
-            }
-        }
-
-        @if(Auth::check())
-
-        function cancel_reply(id) {
-            _this = $('#comment_box_' + id).remove();
-        }
-
-        function submit_reply(id) {
-            button = document.getElementById('post_reply_btn_'+id);
-            var l = Ladda.create(button);
-            l.start();
-
-            comment = $('#reply_text_' + id).val();
-            data = {'thread': thread, 'comment': comment, 'parent': id, 'api_token': '{{Auth::user()->api_token}}'};
-            $.post( '/api/comments/add', data, function(res) {
-                if (res.warning) {
-                    $('#comment_box_alert_' + id).empty().append('<span>'+ res.warning +'</span>');
-                    l.stop();
-                } else {
-                    to_append = $('#post_panel_' + id);
-                    created = moment(res.post.created_at).utcOffset('+0400').format('YYYY-MM-DD HH:mm');
-                    created = moment(created);
-                    ago = created.fromNow();
-                    to_append.append('' +
-                        '                <div id="post_panel_' + res.post.id + '" style="margin-left: 20px; width:95%; min-width: 400px;" class="col-xs-12">' +
-                        '                    <div style="width: 40px; margin-top: -5px;" class="votes col-xs-2 col-sm-1">' +
-                        '                        <div style="margin-left: 20px;" class="wrap">' +
-                        '                            <div style="margin-bottom: -15px; font-size: 20px;" class="row stack">' +
-                        '                                <a style="color: inherit;" href="javascript:votepost(' + res.post.id + ', `up`);"><i id="' + res.post.id + '_up_post" data-voted="no" data-vote="up" data-post="' + res.post.id + '" class="fa fa-sort-asc"></i></a>' +
-                        '                            </div>' +
-                        '                            <div class="row stack">' +
-                        '                                <span id="' + res.post.id + '_counter_post" class="stack">' + res.post.score + '</span>' +
-                        '                            </div>' +
-                        '                            <div style="margin-top: -15px; font-size: 20px;" class="row stack">' +
-                        '                                <a style="color: inherit;" href="javascript:votepost(' + res.post.id + ', `down`);"><i id="' + res.post.id + '_down_post" data-voted="no" data-vote="down" data-thread="' + res.post.id + '" class="fa fa-sort-desc stack"></i></a>' +
-                        '                            </div>' +
-                        '                        </div>' +
-                        '                    </div>' +
-                        '                    <div class="col-xs-10 col-sm11">' +
-                        '                        <span><a href="/u/' + res.post.user_display_name + '">' + res.post.user_display_name + '</a> ' + ago + '</span>' +
-                        '                        <p>' + res.post.comment.replace(/(?:\r\n|\r|\n)/g, '<br />') + '</p>' +
-                        '                        <div style="margin-bottom:3px;" class="linkwrapper"><a style="color: grey;" href="javascript:reply(' + res.post.id + ');">Reply</a></div>' +
-                        '                        <div id="comment_box_app_' + res.post.id + '"></div>' +
-                        '                    </div>' +
-                        '                </div>'
-                    );
-                    l.stop();
-                    $('#comment_box_' + id).remove();
-                }
-            });
-        }
-
-        @endif
-
-        @if($mod)
-        function deleteThread() {
-            if (confirm("Are you sure you want to delete this thread?") == true) {
-                data = { api_token: '{{Auth::user()->api_token}}'};
-                $.post('/api/thread/delete/'+'{{$thread->code}}', data, function(res) {
-                    if (res.status == 'error') {
-                        alert(res.message);
-                    } else {
-                        alert("Thread removed");
-                        location.reload();
-                    }
-                });
-            }
-        }
-        function deleteComment(id) {
-            if (confirm("Are you rusre you want to delete this comment?") == true) {
-                data = { api_token: '{{Auth::user()->api_token}}'};
-                $.post('/api/comment/delete/'+ id, data, function(res) {
-                    if (res.status == 'error') {
-                        alert(res.message);
-                    } else {
-                        alert("Comment removed");
-                        location.reload();
-                    }
-                });
-            }
-        }
-        @endif
-
-    </script>
-
-    <script>
-        // Format the counter
-        $('.count').each(function() {
-            _this = $(this);
-            if (_this.text() > 1000) {
-                _this.text(numeral(_this.text()).format('0.0a'));
-            }
-        });
-    </script>
-
 @endsection

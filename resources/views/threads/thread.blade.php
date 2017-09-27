@@ -5,7 +5,7 @@
 @include('layouts.partials.twitter_cards')
 
 @section('stylesheets')
-    <link rel="amphtml" href="{{ url('/') }}/amp/p/{{$subPlebbit->name}}/comments/{{$thread->code}}">
+    <link rel="amphtml" href="{{ url('/') }}/amp/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{ str_slug($thread->title) }}">
 
     <link rel="stylesheet" href="{{ asset('css/thread.css') }}">
     <link rel="stylesheet" href="{{ asset('css/subplebbit.css') }}">
@@ -184,6 +184,8 @@
             parent = obj.attr('data-parent');
 
             @if(Auth::check())
+                var username = '{{ Auth::user()->username }}';
+
                 data = {'thread': thread, 'parent': parent, 'comment': comment, 'api_token': '{{Auth::user()->api_token}}'};
 
                 $.post( "/api/comments/add", data, function( res ) {
@@ -212,7 +214,7 @@
                             '                        </div>' +
                             '                    </div>' +
                             '                    <div class="col-xs-10 col-sm11">' +
-                            '                        <span><a href="/u/'+res.post.user_display_name+'">'+res.post.user_display_name+'</a> '+ago+'</span>' +
+                            '                        <span><a href="/u/'+ username +'">'+username+'</a> '+ago+'</span>' +
                             '                        <p>'+res.post.comment.replace(/(?:\r\n|\r|\n)/g, '<br />')+'</p>' +
                             '                        <div class="linkwrapper"><a style="color: grey;" href="javascript:reply('+res.post.id+');">Reply</a></div>' +
                             '                        <div id="comment_box_app_'+res.post.id+'"></div>' +
@@ -411,6 +413,8 @@
             comment = $('#reply_text_' + id).val();
             data = {'thread': thread, 'comment': comment, 'parent': id, 'api_token': '{{Auth::user()->api_token}}'};
             $.post( '/api/comments/add', data, function(res) {
+                var username = '{{ Auth::user()->username }}';
+
                 if (res.warning) {
                     $('#comment_box_alert_' + id).empty().append('<span>'+ res.warning +'</span>');
                     l.stop();
@@ -435,7 +439,7 @@
                         '                        </div>' +
                         '                    </div>' +
                         '                    <div class="col-xs-10 col-sm11">' +
-                        '                        <span><a href="/u/' + res.post.user_display_name + '">' + res.post.user_display_name + '</a> ' + ago + '</span>' +
+                        '                        <span><a href="/u/' + username + '">' + username + '</a> ' + ago + '</span>' +
                         '                        <p>' + res.post.comment.replace(/(?:\r\n|\r|\n)/g, '<br />') + '</p>' +
                         '                        <div style="margin-bottom:3px;" class="linkwrapper"><a style="color: grey;" href="javascript:reply(' + res.post.id + ');">Reply</a></div>' +
                         '                        <div id="comment_box_app_' + res.post.id + '"></div>' +

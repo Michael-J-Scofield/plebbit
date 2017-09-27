@@ -88,7 +88,7 @@ class createThreadController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'title' => "required|min:5:max:150",
+            'title' => "required|min:5:max:100",
             'subplebbit' => 'subplebbit',
             'url' => 'safe_url',
             'post' => 'max:100000'

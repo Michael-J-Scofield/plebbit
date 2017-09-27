@@ -1,27 +1,18 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html amp lang="en">
 <head>
     <meta charset="utf-8">
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
     <link rel='icon' href="{{url('/')}}/images/logo.png" sizes="256x256" type="image/png" />
     <meta name="keywords" content=" plebbit, plebbit.net, vote, comment, submit " />
     <meta name="description" content="Plebbit • Post your stolen memes here" />
+    @yield('meta')
 
-@yield('meta')
-
-<!-- CSRF Token -->
+    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <title>@yield('title')</title>
-
-    <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/main.css') }}" rel="stylesheet">
-
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     @if(env('APP_ENV') == 'production')
         <script>
@@ -35,14 +26,12 @@
 
         </script>
     @endif
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
     @yield('stylesheets')
 </head>
 <body>
-<div id="app">
-    @include('layouts.partials.nav')
-
-    @yield('content')
-
-</div>
+    <div id="app">
+        @yield('content')
+    </div>
 </body>
 </html>
