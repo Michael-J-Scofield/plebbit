@@ -100,7 +100,7 @@
         }
         .commentsHeader {
             margin-top: 15px;
-            padding: 10px;
+            padding: 10px 0 10px 0;
             background: #f5f5f5;
             text-align: center;
         }
