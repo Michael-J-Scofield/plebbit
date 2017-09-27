@@ -125,8 +125,9 @@
             line-height: 1.8;
             text-decoration: none;
         }
-        .button_more a {
+        .button_more span {
             color: white;
+            font-weight: 700;
         }
         .padding-top {
             padding-top: 10px;
@@ -292,7 +293,7 @@
                     </div>
                 @endforeach
 
-                <a href="{{ url('/') }}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{ str_slug($thread->title) }}" class="button_more">View more comments</a>
+                <a href="{{ url('/') }}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{ str_slug($thread->title) }}" class="button_more"><span>View more comments</span></a>
             </div>
         </div>
     </div>
