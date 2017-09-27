@@ -14,7 +14,7 @@
         @endif
       }
     </script>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
     <link rel="canonical" href="{{ url('/') }}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{ str_slug($thread->title) }}">
     <style amp-custom>
         @php
@@ -124,6 +124,20 @@
             line-height: 1.8;
             text-decoration: none;
         }
+        .button_more {
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            color: #fff;
+            background: #24a0ed;
+            margin-top: 24px;
+            margin-bottom: 10px;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            line-height: 1.8;
+            text-decoration: none;
+        }
         .padding-top {
             padding-top: 10px;
         }
@@ -150,6 +164,9 @@
             white-space: normal;
             overflow: hidden;
             color: #0079d3;
+        }
+        #post {
+            font-size: 12px;
         }
         #post_wrapper {
             margin-left: 30px;
