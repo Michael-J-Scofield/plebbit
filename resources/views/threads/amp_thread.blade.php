@@ -94,6 +94,7 @@
             width: auto;
             max-width: 100%;
             max-height: 600px;
+            min-height: 100px;
         }
         .unknown-size img {
             object-fit: contain; /* or 'fill', or 'cover', etc */
