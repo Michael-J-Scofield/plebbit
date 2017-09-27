@@ -15,7 +15,6 @@
       }
     </script>
     <link rel="canonical" href="{{ url('/') }}/p/{{$subPlebbit->name}}/comments/{{$thread->code}}/{{ str_slug($thread->title) }}">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
     <style amp-custom>
         @php
             include 'css/amp_grid.min.css';
@@ -78,10 +77,10 @@
             color: #a5a4a4;
             font-weight: 100;
         }
-        .post {
+        .main_post, .post {
             margin-top: 10px;
         }
-        .post #post p {
+        .main_post #post p {
             font-size: 12px;
             line-height: 1.3;
         }
@@ -210,7 +209,7 @@
             </div>
             <div id="post">
                 @if($thread->link || $thread->post)
-                    <div class="post">
+                    <div class="main_post">
                         @if($thread->link)
                             @if($thread->media_type == 'image')
                                 <div class="image-wrapper">
