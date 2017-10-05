@@ -6,7 +6,7 @@
 @include('layouts.partials.twitter_cards')
 
 @section('content')
-<div class="container">
+<div style="margin-top: 20px;" class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
