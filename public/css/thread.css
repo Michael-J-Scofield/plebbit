@@ -25,3 +25,8 @@
 .hidden-content {
     color: red;
 }
+
+.post img {
+    max-width: 100%;
+    max-height: 600px;
+}
