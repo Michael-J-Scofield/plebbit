@@ -302,7 +302,7 @@
         <div class="row">
             @php
             $thread = new \App\Thread();
-            $top_posts = $thread->orderBy('score', 'desc')->take(5)->get();
+            $top_posts = $thread->where('sub_plebbit_id', $subPlebbit->id)->orderBy('score', 'desc')->take(5)->get();
             @endphp
 
             @if($top_posts->count() > 0)
