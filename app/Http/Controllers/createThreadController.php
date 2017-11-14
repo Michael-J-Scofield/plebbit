@@ -85,6 +85,18 @@ class createThreadController extends Controller
                 CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
                 CURLOPT_PROXY => env('CURL_PROXY')
             ]);
+        } else {
+            $dispatcher = new CurlDispatcher([
+                CURLOPT_MAXREDIRS => 20,
+                CURLOPT_CONNECTTIMEOUT => 10,
+                CURLOPT_TIMEOUT => 10,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_ENCODING => '',
+                CURLOPT_AUTOREFERER => false,
+                CURLOPT_USERAGENT => 'Plebbit bot',
+                CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+            ]);
         }
 
         $validator = Validator::make($request->all(), [

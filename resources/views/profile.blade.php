@@ -105,7 +105,7 @@
                                         </div>
                                     </div>
                                     <div class="thread_info">
-                                        <a style="color: #636b6f;" href="@if($post->link) {{$post->link}} @else {{url('/')}}/p/{{$post->name}}/comments/{{$post->code}}/{{$post->title}} @endif"><h3 class="thread_title overflow">{{$post->title}}</h3></a>
+                                        <a style="color: #636b6f;" href="@if($post->link) {{$post->link}} @else {{url('/')}}/p/{{$subplebbit->name}}/comments/{{$post->code}}/{{str_slug($post->title)}} @endif"><h3 class="thread_title overflow">{{$post->title}}</h3></a>
                                         <p class="overflow" style="margin-top: -10px;">placed by <a href="/u/{{$postername->username}}">{{$postername->username}}</a> {{Carbon\Carbon::parse($post->created_at)->diffForHumans()}} in
                                             <a href="/p/{{$subplebbit->name}}">{{$subplebbit->name}}</a></p>
                                         <a href="{{url('/')}}/p/{{$subplebbit->name}}/comments/{{$post->code}}/{{$post->title}}"><p class="overflow" style="margin-top: -10px;"><strong>{{$post->reply_count}} {{str_plural('reply', $post->reply_count)}}</strong></p></a>
