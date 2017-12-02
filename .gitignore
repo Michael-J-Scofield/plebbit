@@ -11,7 +11,3 @@ npm-debug.log
 yarn-error.log
 .env
 .DS_Store
-/public/media/*
-/public/images/plebbits/headers/*
-/public/images/plebbits/icons/*
-/public/images/plebbits/thumbnails/*
