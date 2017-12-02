@@ -36,6 +36,10 @@ class commentsController extends Controller
         if ( (!$subPlebbit) || (!$thread) ) {
             return view('threads.not_found');
         }
+        if ($subPlebbit->id != $thread->sub_plebbit_id) {
+            flash('The thread was not found in the subplebbit', 'warning');
+            return redirect('/');
+        }
         $userVotes = false;
         if (Auth::check()) {
             $user = Auth::user();

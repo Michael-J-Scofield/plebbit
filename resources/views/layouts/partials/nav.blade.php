@@ -76,12 +76,12 @@
                             my subplebbits <span class="caret"></span>
                         </a>
                         <ul style="font-size: 12px; margin:0; padding:0;" class="dropdown-menu" role="menu">
-                            <li>
+                            <li class="subscriptions">
                                 @if($subscribed->count() < 1)
                                     <span style="padding: 10px;">No subscriptions yet</span>
                                 @else
                                     @foreach($subscribed as $sub)
-                                        <a href="/p/{{$sub->name}}">{{$sub->name}}</a>
+                                        <a class="sub" href="/p/{{$sub->name}}">{{$sub->name}}</a>
                                     @endforeach
                                 @endif
                             </li>

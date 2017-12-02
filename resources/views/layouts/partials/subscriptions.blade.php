@@ -1,6 +1,8 @@
 @if($subPlebbit)
 <script>
     $('.subscribe').click(function() {
+        subscriptions = $('.subscriptions');
+
         _this = $(this);
         var subscribed = _this.attr('data-subscribed');
 
@@ -11,10 +13,16 @@
             if (subscribed === 'no') {
                 $.post( "/api/subscribe/" + plebbit, data, function( res ) {
                     _this.removeClass('notsubscribed').addClass('subscribed').attr('data-subscribed', 'yes').text('Unsubscribe');
+                    subscriptions.append('<a href="/p/'+ res.sub_plebbit +'">'+ res.sub_plebbit +'</a>');
                 });
             } else {
             $.post( "/api/unsubscribe/" + plebbit, data, function( res ) {
                     _this.removeClass('subscribed').addClass('notsubscribed').attr('data-subscribed', 'no').text('Subscribe');
+                    $('.sub').each(function() {
+                        if ($(this).text() === res.sub_plebbit) {
+                            $(this).remove();
+                        }
+                    });
                 });
             }
         @else
