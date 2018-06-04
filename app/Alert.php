@@ -2,16 +2,14 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Helpers\Math;
 use App\Messaging;
 
-class Alert extends Authenticatable
+class Alert extends Model
 {
     protected $table = 'alerts';
-
-    use Notifiable;
 
     /**
      * The attributes that are mass assignable.

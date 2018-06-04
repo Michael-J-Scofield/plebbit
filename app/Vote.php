@@ -2,15 +2,11 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Helpers\Math;
+use Illuminate\Database\Eloquent\Model;
 
-class Vote extends Authenticatable
+class Vote extends Model
 {
     protected $table = 'votes';
-
-    use Notifiable;
 
     /**
      * The attributes that are mass assignable.

@@ -2,15 +2,12 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use App\Helpers\Math;
 
-class Thread extends Authenticatable
+class Thread extends Model
 {
     protected $table = 'threads';
-
-    use Notifiable;
 
     /**
      * The attributes that are mass assignable.

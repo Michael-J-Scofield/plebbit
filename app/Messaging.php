@@ -2,15 +2,12 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use App\Helpers\Math;
 
-class Messaging extends Authenticatable
+class Messaging extends Model
 {
     protected $table = 'private_messages';
-
-    use Notifiable;
 
     /**
      * The attributes that are mass assignable.

@@ -2,14 +2,11 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
-class subPlebbit extends Authenticatable
+class subPlebbit extends Model
 {
     protected $table = 'sub_plebbits';
-
-    use Notifiable;
 
     /**
      * The attributes that are mass assignable.

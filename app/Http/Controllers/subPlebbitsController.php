@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Moderator;
 use Illuminate\Http\Request;
 use App\subPlebbit;
 use App\Thread;
@@ -22,7 +23,7 @@ class subPlebbitsController extends Controller
     }
 
 
-    public function subPlebbit($name, Request $request, subPlebbit $subPlebbit, Thread $thread, Vote $vote, Subscription $subscription)
+    public function subPlebbit($name, Request $request, subPlebbit $subPlebbit, Thread $thread, Vote $vote, Subscription $subscription, Moderator $moderator)
     {
         $subPlebbit = $subPlebbit->where('name', $name)->first();
 
@@ -67,7 +68,15 @@ class subPlebbitsController extends Controller
             }
         }
 
-        return view('subPlebbits.subPlebbit', array('subPlebbit' => $subPlebbit, 'threads' => $threads, 'userVotes' => $userVotes, 'sort' => $sort, 'subscribed' => $subscribed, 'readers' => $readers));
+        return view('subPlebbits.subPlebbit', array(
+            'subPlebbit' => $subPlebbit,
+            'threads' => $threads,
+            'userVotes' => $userVotes,
+            'sort' => $sort,
+            'subscribed' => $subscribed,
+            'readers' => $readers,
+            'moderators' => $moderator->getBySubPlebbitId($subPlebbit->id))
+        );
     }
 
 }

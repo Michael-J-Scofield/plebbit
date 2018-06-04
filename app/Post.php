@@ -2,15 +2,12 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use App\Helpers\Math;
 
-class Post extends Authenticatable
+class Post extends Model
 {
     protected $table = 'posts';
-
-    use Notifiable;
 
     /**
      * The attributes that are mass assignable.

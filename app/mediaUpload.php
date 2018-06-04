@@ -2,14 +2,11 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
-class mediaUpload extends Authenticatable
+class mediaUpload extends Model
 {
     protected $table = 'media_upload';
-
-    use Notifiable;
 
     /**
      * The attributes that are mass assignable.

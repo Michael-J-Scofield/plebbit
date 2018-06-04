@@ -2,15 +2,12 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use App\User;
 
-class Moderator extends Authenticatable
+class Moderator extends Model
 {
     protected $table = 'moderators';
-
-    use Notifiable;
 
     /**
      * The attributes that are mass assignable.

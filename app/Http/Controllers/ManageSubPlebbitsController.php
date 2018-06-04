@@ -80,6 +80,11 @@ class ManageSubPlebbitsController extends Controller
         $plebbit->owner_id = Auth::user()->id;
         $plebbit->save();
 
+        (new \App\Moderator)->create([
+            'user_id' => $request->user()->id,
+            'sub_plebbit_id' => $plebbit->id
+        ]);
+
         return redirect('/p/'.$plebbit->name);
     }
 

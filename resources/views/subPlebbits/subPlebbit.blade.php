@@ -126,6 +126,18 @@
                             <p style="margin:0; word-wrap: break-word">{!! nl2br(e(htmlspecialchars($subPlebbit->description))) !!}</p>
                         </div>
                     </div>
+
+                    <div style="margin-top: -8px;" class="well">
+                        <a style="color: #636b6f;" data-toggle="collapse" href="#mods"><h4 class="overflow">Moderators for <a data-toggle="collapse" href="#mods">/p/{{$subPlebbit->name}}</a></h4></a>
+                        <div id="mods" class="panel-collapse collapse">
+                            @if($moderators->count() < 1)
+                                <p>There are no mods for this subplebbit yet.</p>
+                            @endif
+                            @foreach($moderators as $moderator)
+                                <a href="/u/{{$moderator->username}}">{{$moderator->username}}</a> <br>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
 
             @if($threads)
@@ -197,7 +209,7 @@
 
     @else
         <div class="container">
-            <p>It looks like this plebbit does not exist. Make it yours!</p>
+            <p style="margin-top: 20px;">It looks like this plebbit does not exist. Make it yours!</p>
         </div>
     @endif
 
