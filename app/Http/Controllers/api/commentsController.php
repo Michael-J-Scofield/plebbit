@@ -50,7 +50,8 @@ class commentsController extends Controller
                 'error' => 'thread not found'
             ], 404);
         }
-        $alert = null;
+        $alert = new Alert();
+        $alert->thread_id = $thread->id;
 
         $parent = $request->input('parent');
         if ($parent) {
@@ -60,9 +61,12 @@ class commentsController extends Controller
                     'error' => 'parent not found'
                 ], 404);
             }
-            $alert = new Alert();
             $alert->user_id = $parent->user_id;
             $alert->post_id = $parent->id;
+            $alert->active = true;
+            $alert->code = $alert->getCode();
+        } else {
+            $alert->user_id = $thread->poster_id;
             $alert->active = true;
             $alert->code = $alert->getCode();
         }

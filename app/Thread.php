@@ -31,6 +31,11 @@ class Thread extends Authenticatable
         return $math->toBase($last->id + 1000000 + 1);
     }
 
+    public function subPlebbit()
+    {
+        return $this->hasOne('App\subPlebbit', 'id', 'sub_plebbit_id');
+    }
+
     public function threadsByUser($id, $sort, $skip, $amount)
     {
         if ($sort == 'popular') {

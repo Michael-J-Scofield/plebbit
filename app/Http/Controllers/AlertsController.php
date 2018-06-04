@@ -28,16 +28,24 @@ class AlertsController extends Controller
         if ($alert->user_id !== $user->id) {
             return Redirect('/');
         }
+        if (!$alert->post_id) {
+            $thread = $thread->where('id', $alert->thread_id)->first();
+            $alert->active = false;
+            $alert->save();
+            return redirect('/p/'.$thread->subPlebbit->name.'/comments/'.$thread->code.'/'.str_slug($thread->title));
+        }
 
-        $parent_comment = $post->select( 'posts.id','username as user_display_name', 'score', 'thread_id', 'comment', 'parent_id', 'posts.created_at')
-            ->where('posts.id', $alert->post_id)
-            ->join('users', 'posts.user_id', '=', 'users.id')
-            ->first();
+        if ($alert->post_id) {
+            $parent_comment = $post->select('posts.id', 'username as user_display_name', 'score', 'thread_id', 'comment', 'parent_id', 'posts.created_at')
+                ->where('posts.id', $alert->post_id)
+                ->join('users', 'posts.user_id', '=', 'users.id')
+                ->first();
+        }
         $reply = $post->select( 'posts.id', 'username as user_display_name', 'thread_id', 'score', 'comment', 'parent_id', 'posts.created_at')
             ->where('posts.id', $alert->reply_post_id)
             ->join('users', 'posts.user_id', '=', 'users.id')
             ->first();
-        $thread = $thread->select('id', 'code', 'title')->where('id', $parent_comment->thread_id)->first();
+            $thread = $thread->select('id', 'code', 'title')->where('id', $parent_comment->thread_id)->first();
         $user_reply = $post->select( 'posts.id', 'username as user_display_name', 'score', 'thread_id', 'comment', 'parent_id', 'posts.created_at')
             ->join('users', 'posts.user_id', '=', 'users.id')
             ->where('parent_id', $reply->id)
