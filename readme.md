@@ -5,7 +5,6 @@
 # Plebbit: a reddit clone made in Laravel
 
 Plebbit is a reddit clone build in Laravel 5.5. <br>
-You can visit the live site at [plebbit.net](https://plebbit.net)
 
 ## Features
 - Subreddits
@@ -20,6 +19,7 @@ You can visit the live site at [plebbit.net](https://plebbit.net)
 
 ## Still needs to be added
 - More moderation.
+- Need to make a fancier front-end.
 - You tell me...
 
 ## Requirements
